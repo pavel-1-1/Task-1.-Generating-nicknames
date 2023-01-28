@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Pattern;
 
 public class Main {
     private static final String[] texts = new String[100_000];
@@ -22,16 +21,13 @@ public class Main {
         Thread[] threads = new Thread[3];
 
         AtomicInteger integer3 = new AtomicInteger(0);
-        String pattern3 = "ccc|aaa|bbb";
-        threads[0] = new Thread(() -> count(integer3, 3, pattern3));
+        threads[0] = new Thread(() -> count(integer3, 3));
 
         AtomicInteger integer4 = new AtomicInteger(0);
-        String pattern4 = "aaaa|bbbb|cccc|aacc|bbaa|ccaa";
-        threads[1] = new Thread(() -> count(integer4, 4, pattern4));
+        threads[1] = new Thread(() -> count(integer4, 4));
 
         AtomicInteger integer5 = new AtomicInteger(0);
-        String pattern5 = "ccccc|aaaaa|bbbbb|aaacc|babab|acaca";
-        threads[2] = new Thread(() -> count(integer5, 5, pattern5));
+        threads[2] = new Thread(() -> count(integer5, 5));
 
         for (Thread thread : threads) {
             thread.start();
@@ -49,9 +45,9 @@ public class Main {
         System.out.println("Время: " + (finish - start));
     }
 
-    private static void count(AtomicInteger integer, int length, String pattern) {
-        Arrays.stream(texts).filter(n -> n.length() == length).filter(n -> Pattern.matches(
-                pattern, n)).forEach(n -> integer.incrementAndGet());
+    private static void count(AtomicInteger integer, int length) {
+        Arrays.stream(texts).filter(n -> n.length() == length & n.equals(new StringBuilder(n)
+                .reverse().toString())).forEach(n -> integer.incrementAndGet());
     }
 
     private static String generateText(String letter, int length) {
